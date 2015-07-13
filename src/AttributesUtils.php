@@ -86,10 +86,10 @@ class AttributesUtils
         return $attributes;
     }
 
-    public static function merge(/*$array1, $array2 = []*/)
+    public static function merge($attributes1, $attributes2)
     {
         $attributes = [];
-        foreach (func_get_args() as $arg) {
+        foreach ([$attributes1, $attributes2] as $arg) {
             if (($arg instanceof AbstractBlock || $arg instanceof AbstractInline)) {
                 $arg = isset($arg->data['attributes']) ? $arg->data['attributes'] : [];
             }
