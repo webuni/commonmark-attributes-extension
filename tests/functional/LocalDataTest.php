@@ -11,6 +11,7 @@
 
 namespace Webuni\CommonMark\AttributesExtension\tests\functional;
 
+use League\CommonMark\Converter;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
 use Webuni\CommonMark\AttributesExtension\AttributesExtension;
@@ -19,8 +20,7 @@ use Webuni\CommonMark\TableExtension\TableExtension;
 
 class LocalDataTest extends \PHPUnit_Framework_TestCase
 {
-    private $parser;
-    private $renderer;
+    protected $converter;
 
     protected function setUp()
     {
@@ -28,8 +28,7 @@ class LocalDataTest extends \PHPUnit_Framework_TestCase
         $environment->addExtension(new AttributesExtension());
         $environment->addExtension(new TableExtension());
 
-        $this->parser = new DocParser($environment);
-        $this->renderer = new HtmlRenderer($environment);
+        $this->converter = new Converter(new DocParser($environment), new HtmlRenderer($environment));
     }
 
     /**
@@ -37,8 +36,7 @@ class LocalDataTest extends \PHPUnit_Framework_TestCase
      */
     public function testExample($markdown, $html, $testName)
     {
-        $documentAST = $this->parser->parse($markdown);
-        $actualResult = $this->renderer->renderBlock($documentAST);
+        $actualResult = $this->converter->convertToHtml($markdown);
 
         $failureMessage = sprintf('Unexpected result for "%s" test', $testName);
         $failureMessage .= "\n=== markdown ===============\n".$markdown;
