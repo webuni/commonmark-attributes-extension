@@ -22,7 +22,7 @@ Usage
 use League\CommonMark\Converter;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
-use Webuni\CommonMark\AttributesExtension\HtmlRenderer;
+use League\CommonMark\HtmlRenderer;
 use Webuni\CommonMark\AttributesExtension\AttributesExtension;
 
 $environment = Environment::createCommonMarkEnvironment();

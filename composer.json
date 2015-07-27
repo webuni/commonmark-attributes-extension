@@ -14,10 +14,10 @@
     ],
     "require": {
         "php": ">=5.4",
-        "league/commonmark": "0.9.*|0.10.*"
+        "league/commonmark": "0.10.*|0.11.*"
     },
     "require-dev": {
-        "webuni/commonmark-table-extension": "^0.1",
+        "webuni/commonmark-table-extension": "~0.3",
         "phpunit/phpunit": "^4.3",
         "fabpot/php-cs-fixer": "^1.9"
     },

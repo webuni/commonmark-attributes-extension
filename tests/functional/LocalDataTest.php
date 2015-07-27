@@ -14,8 +14,8 @@ namespace Webuni\CommonMark\AttributesExtension\tests\functional;
 use League\CommonMark\Converter;
 use League\CommonMark\DocParser;
 use League\CommonMark\Environment;
+use League\CommonMark\HtmlRenderer;
 use Webuni\CommonMark\AttributesExtension\AttributesExtension;
-use Webuni\CommonMark\AttributesExtension\HtmlRenderer;
 use Webuni\CommonMark\TableExtension\TableExtension;
 
 class LocalDataTest extends \PHPUnit_Framework_TestCase
