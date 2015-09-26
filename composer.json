@@ -14,12 +14,13 @@
     ],
     "require": {
         "php": ">=5.4",
-        "league/commonmark": "0.10.*|0.11.*"
+        "league/commonmark": "^0.11"
     },
     "require-dev": {
         "webuni/commonmark-table-extension": "~0.3",
         "phpunit/phpunit": "^4.3",
-        "fabpot/php-cs-fixer": "^1.9"
+        "fabpot/php-cs-fixer": "^1.9",
+        "symfony/var-dumper": "^2.7"
     },
     "autoload": {
         "psr-4": {
@@ -28,7 +29,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1-dev"
+            "dev-master": "0.3-dev"
         }
     }
 }

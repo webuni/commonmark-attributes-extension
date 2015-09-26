@@ -22,6 +22,7 @@ class InlineAttributes extends AbstractInline
     {
         $this->attributes = $attributes;
         $this->block = (bool) $block;
+        $this->data = ['delim' => true];
     }
 
     public function getAttributes()

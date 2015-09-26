@@ -11,7 +11,7 @@
 
 namespace Webuni\CommonMark\AttributesExtension;
 
-use League\CommonMark\ContextInterface;
+use League\CommonMark\Delimiter\Delimiter;
 use League\CommonMark\Inline\Parser\AbstractInlineParser;
 use League\CommonMark\InlineParserContext;
 
@@ -22,7 +22,7 @@ class AttributesInlineParser extends AbstractInlineParser
         return [' ', '{'];
     }
 
-    public function parse(ContextInterface $context, InlineParserContext $inlineContext)
+    public function parse(InlineParserContext $inlineContext)
     {
         $cursor = $inlineContext->getCursor();
         if ($cursor->getFirstNonSpaceCharacter() !== '{') {
@@ -39,7 +39,9 @@ class AttributesInlineParser extends AbstractInlineParser
             return false;
         }
 
-        $inlineContext->getInlines()->add(new InlineAttributes($attributes, ' ' === $char || '' === $char));
+        $node = new InlineAttributes($attributes, ' ' === $char || '' === $char);
+        $inlineContext->getContainer()->appendChild($node);
+        $inlineContext->getDelimiterStack()->push(new Delimiter('attributes', 1, $node, false, false));
 
         return true;
     }

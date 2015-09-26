@@ -11,48 +11,38 @@
 
 namespace Webuni\CommonMark\AttributesExtension;
 
+use League\CommonMark\Block\Element\ListBlock;
 use League\CommonMark\Block\Element\ListItem;
 use League\CommonMark\Delimiter\Delimiter;
 use League\CommonMark\Delimiter\DelimiterStack;
 use League\CommonMark\Inline\Processor\InlineProcessorInterface;
-use League\CommonMark\Util\ArrayCollection;
 
 class AttributesInlineProcessor implements InlineProcessorInterface
 {
-    public function processInlines(ArrayCollection $inlines, DelimiterStack $delimiterStack, Delimiter $stackBottom = null)
+    public function processInlines(DelimiterStack $delimiterStack, Delimiter $stackBottom = null)
     {
-        $previous = null;
-        foreach ($inlines as $key => $inline) {
-            if (!$inline instanceof InlineAttributes) {
-                $previous = $inline;
+        $delimiter = $delimiterStack->getTop();
+        while ($delimiter !== null) {
+            $node = $delimiter->getInlineNode();
+            if (!$node instanceof InlineAttributes) {
+                $delimiter = $delimiter->getPrevious();
                 continue;
             }
 
-            $inlines->remove($key);
-
-            if (0 === count($inline->getAttributes())) {
-                continue;
-            }
-
-            $node = null;
-            if ($inline->isBlock()) {
-                foreach (debug_backtrace(false) as $trace) {
-                    if ('League\CommonMark\DocParser' === $trace['class'] && 'processInlines' === $trace['function']) {
-                        $node = $trace['args'][1];
-                        break;
-                    }
-                };
-
-                if ($node->getParent() instanceof ListItem && $node->getParent()->getParent()->isTight()) {
-                    $node = $node->getParent();
+            if ($node->isBlock()) {
+                $target = $node->parent();
+                if (($parent = $target->parent()) instanceof ListItem && $parent->parent() instanceof ListBlock && $parent->parent()->isTight()) {
+                    $target = $parent;
                 }
-            } elseif ($previous) {
-                $node = $previous;
+            } else {
+                $target = $node->previous();
             }
 
-            if ($node) {
-                $node->data['attributes'] = AttributesUtils::merge($node, $inline->getAttributes());
-            }
+            $target->data['attributes'] = AttributesUtils::merge($target, $node->getAttributes());
+
+            $node->detach();
+
+            $delimiter = $delimiter->getPrevious();
         }
     }
 }

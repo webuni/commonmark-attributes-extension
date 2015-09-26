@@ -11,9 +11,11 @@
 
 namespace Webuni\CommonMark\AttributesExtension;
 
-use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\Document;
+use League\CommonMark\Block\Element\ListBlock;
+use League\CommonMark\Block\Element\ListItem;
 use League\CommonMark\ContextInterface;
+use League\CommonMark\Node\NodeWalker;
 
 class AttributesDocument extends Document
 {
@@ -21,43 +23,42 @@ class AttributesDocument extends Document
     {
         parent::finalize($context);
 
-        $this->applyAttributes($this);
+        $this->applyAttributes($this->walker());
 
-        $parent = $this->getParent();
-        $parent->removeChild($this);
-        foreach ($this->getChildren() as $child) {
-            $parent->addChild($child);
+        $parent = $this->parent();
+        $this->detach();
+        foreach ($this->children() as $child) {
+            $parent->appendChild($child);
         }
     }
 
-    private function applyAttributes(AbstractBlock $block)
+    private function applyAttributes(NodeWalker $walker)
     {
-        $previous = null;
-        $prepend = null;
-        foreach ($block->getChildren() as $key => $child) {
-            if ($child instanceof Attributes) {
-                if ($child->isPrepend()) {
-                    $prepend = $child;
-                } elseif ($child->isAppend()) {
-                    $previous->data['attributes'] = AttributesUtils::merge($previous ?: $block, $child->getAttributes());
-                }
-
-                $block->removeChild($child);
-            } else {
-                if (isset($prepend)) {
-                    $child->data['attributes'] = AttributesUtils::merge($child, $prepend->getAttributes());
-                }
-                $prepend = null;
-
-                $this->applyAttributes($child);
-                $previous = $child;
+        while (($event = $walker->next())) {
+            $node = $event->getNode();
+            if (!$node instanceof Attributes || $event->isEntering()) {
+                continue;
             }
-        }
 
-        if (isset($prepend)) {
-            $block->data['attributes'] = AttributesUtils::merge($block, $prepend->getAttributes());
-        }
+            $isLastChild = $node->parent()->lastChild() === $node;
 
-        return $block;
+            if (!$node->parent() instanceof Document && $isLastChild) {
+                $target = $node->parent();
+            } elseif ($node->endsWithBlankLine() || $isLastChild) {
+                $target = $node->previous();
+            } else {
+                $target = $node->next();
+            }
+
+            if ($target && ($parent = $target->parent()) instanceof ListItem  && $parent->parent() instanceof ListBlock && $parent->parent()->isTight()) {
+                $target = $parent;
+            }
+
+            if ($target) {
+                $target->data['attributes'] = AttributesUtils::merge($target, $node->getAttributes());
+            }
+
+            $node->detach();
+        }
     }
 }

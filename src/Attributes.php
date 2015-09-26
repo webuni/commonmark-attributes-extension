@@ -17,17 +17,12 @@ use League\CommonMark\Cursor;
 
 class Attributes extends AbstractBlock
 {
-    const PREPEND = 0;
-    const APPEND = 1;
-
     private $attributes;
-    private $direction;
 
-    public function __construct($attributes, $direction)
+    public function __construct($attributes)
     {
         parent::__construct();
         $this->attributes = $attributes;
-        $this->direction = $direction;
     }
 
     public function getAttributes()
@@ -35,19 +30,9 @@ class Attributes extends AbstractBlock
         return $this->attributes;
     }
 
-    public function isPrepend()
-    {
-        return self::PREPEND === $this->direction;
-    }
-
-    public function isAppend()
-    {
-        return self::APPEND === $this->direction;
-    }
-
     public function canContain(AbstractBlock $block)
     {
-        return true;
+        return false;
     }
 
     public function acceptsLines()
@@ -61,6 +46,17 @@ class Attributes extends AbstractBlock
     }
 
     public function matchesNextLine(Cursor $cursor)
+    {
+        if ($cursor->isBlank()) {
+            $this->setLastLineBlank(true);
+        } else {
+            $this->setLastLineBlank(false);
+        }
+
+        return false;
+    }
+
+    public function shouldLastLineBeBlank(Cursor $cursor, $currentLineNumber)
     {
         return false;
     }
