@@ -19,9 +19,9 @@ use League\CommonMark\Node\NodeWalker;
 
 class AttributesDocument extends Document
 {
-    public function finalize(ContextInterface $context)
+    public function finalize(ContextInterface $context, $endLineNumber = null)
     {
-        parent::finalize($context);
+        parent::finalize($context, $endLineNumber);
 
         $this->applyAttributes($this->walker());
 
