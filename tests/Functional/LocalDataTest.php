@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Webuni\CommonMark\AttributesExtension\tests\functional;
+namespace Webuni\CommonMark\AttributesExtension\Tests\Functional;
 
 use League\CommonMark\Converter;
 use League\CommonMark\DocParser;
