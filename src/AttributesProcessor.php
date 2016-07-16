@@ -17,6 +17,7 @@ use League\CommonMark\Block\Element\Document;
 use League\CommonMark\Block\Element\ListBlock;
 use League\CommonMark\Block\Element\ListItem;
 use League\CommonMark\DocumentProcessorInterface;
+use League\CommonMark\Node\Node;
 
 class AttributesProcessor implements DocumentProcessorInterface
 {
@@ -49,7 +50,7 @@ class AttributesProcessor implements DocumentProcessorInterface
                 $target->data['attributes'] = $attributes;
             }
 
-            if ($node->endsWithBlankLine() && $node->next() && $node->previous()) {
+            if ($node instanceof AbstractBlock && $node->endsWithBlankLine() && $node->next() && $node->previous()) {
                 $node->previous()->setLastLineBlank(true);
             }
 
@@ -57,7 +58,7 @@ class AttributesProcessor implements DocumentProcessorInterface
         }
     }
 
-    private function findTargetAndDirection(AbstractBlock $node)
+    private function findTargetAndDirection(Node $node)
     {
         $target = null;
         $direction = null;
@@ -88,21 +89,21 @@ class AttributesProcessor implements DocumentProcessorInterface
         return [$target, $direction];
     }
 
-    private function getPrevious(AbstractBlock $node = null)
+    private function getPrevious(Node $node = null)
     {
-        $previous = $node instanceof AbstractBlock ? $node->previous() : null;
+        $previous = $node instanceof Node ? $node->previous() : null;
 
-        if ($previous && $previous->endsWithBlankLine()) {
+        if ($previous instanceof AbstractBlock && $previous->endsWithBlankLine()) {
             $previous = null;
         }
 
         return $previous;
     }
 
-    private function getNext(AbstractBlock $node = null)
+    private function getNext(Node $node = null)
     {
-        if ($node instanceof AbstractBlock) {
-            return $node->endsWithBlankLine() ? null : $node->next();
+        if ($node instanceof Node) {
+            return $node instanceof AbstractBlock && $node->endsWithBlankLine() ? null : $node->next();
         }
     }
 }
