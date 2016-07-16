@@ -36,8 +36,10 @@ class AttributesExtension extends Extension
         ];
     }
 
-    public function getName()
+    public function getDocumentProcessors()
     {
-        return 'attributes';
+        return [
+            new AttributesProcessor(),
+        ];
     }
 }

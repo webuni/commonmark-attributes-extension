@@ -5,12 +5,15 @@
 
 
 {.classA}
-*   {.classB}
+*   {.classD}
+
+    {.classB}
     {.classC} list item
 
     {#id1}
     Another paragraph
 
+    {.classE}
 *   list item
 
 

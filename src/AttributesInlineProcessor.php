@@ -22,6 +22,7 @@ class AttributesInlineProcessor implements InlineProcessorInterface
     public function processInlines(DelimiterStack $delimiterStack, Delimiter $stackBottom = null)
     {
         $delimiter = $delimiterStack->getTop();
+
         while ($delimiter !== null) {
             $node = $delimiter->getInlineNode();
             if (!$node instanceof InlineAttributes) {
@@ -38,7 +39,7 @@ class AttributesInlineProcessor implements InlineProcessorInterface
                 $target = $node->previous();
             }
 
-            $target->data['attributes'] = AttributesUtils::merge($target, $node->getAttributes());
+            $target->data['attributes'] = AttributesUtils::merge($node->getAttributes(), $target);
 
             $node->detach();
 

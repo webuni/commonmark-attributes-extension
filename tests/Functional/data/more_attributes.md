@@ -9,7 +9,10 @@ Header with attributes {#header1}
 ### Header no attributes ###
 
 {#par1}
-Paragraph with a.
+{.first}
+{.second}Paragraph with a. {.third}
+{.fourth}
+{.fifth}
 
 Paragraph with *emphasis*{.chello}
    {#par2}

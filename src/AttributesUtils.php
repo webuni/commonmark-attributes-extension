@@ -71,13 +71,13 @@ class AttributesUtils
             } else {
                 $attributes[trim($name)] = trim($value);
             }
-        };
+        }
 
         if (0 === $cursor->advanceWhileMatches('}')) {
             $cursor->restoreState($state);
 
             return [];
-        };
+        }
 
         if (isset($attributes['class'])) {
             $attributes['class'] = implode(' ', $attributes['class']);
@@ -90,7 +90,7 @@ class AttributesUtils
     {
         $attributes = [];
         foreach ([$attributes1, $attributes2] as $arg) {
-            if (($arg instanceof AbstractBlock || $arg instanceof AbstractInline)) {
+            if ($arg instanceof AbstractBlock || $arg instanceof AbstractInline) {
                 $arg = isset($arg->data['attributes']) ? $arg->data['attributes'] : [];
             }
 

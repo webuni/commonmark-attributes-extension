@@ -39,6 +39,10 @@ class AttributesInlineParser extends AbstractInlineParser
             return false;
         }
 
+        if ('' === $char) {
+            $cursor->advanceToFirstNonSpace();
+        }
+
         $node = new InlineAttributes($attributes, ' ' === $char || '' === $char);
         $inlineContext->getContainer()->appendChild($node);
         $inlineContext->getDelimiterStack()->push(new Delimiter('attributes', 1, $node, false, false));
