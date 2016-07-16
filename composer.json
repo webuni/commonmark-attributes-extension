@@ -14,13 +14,14 @@
     ],
     "require": {
         "php": ">=5.4",
-        "league/commonmark": "^0.11|^0.12|^0.13"
+        "league/commonmark": "^0.13|^0.14"
     },
     "require-dev": {
-        "webuni/commonmark-table-extension": "0.4.3",
-        "phpunit/phpunit": "^4.3",
-        "fabpot/php-cs-fixer": "^1.9",
-        "symfony/var-dumper": "^2.7"
+        "webuni/commonmark-table-extension": "~0.4",
+        "phpunit/phpunit": "^4.3|^5.0",
+        "friendsofphp/php-cs-fixer": "^1.9",
+        "sllh/php-cs-fixer-styleci-bridge": "^2.0",
+        "symfony/var-dumper": "^2.8|^3.0"
     },
     "autoload": {
         "psr-4": {

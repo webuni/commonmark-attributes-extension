@@ -3,6 +3,7 @@ CommonMark Attributes Extension
 
 [![Packagist](https://img.shields.io/packagist/v/webuni/commonmark-attributes-extension.svg?style=flat-square)](https://packagist.org/packages/webuni/commonmark-attributes-extension)
 [![Build Status](https://img.shields.io/travis/webuni/commonmark-attributes-extension.svg?style=flat-square)](https://travis-ci.org/webuni/commonmark-attributes-extension)
+[![StyleCI](https://styleci.io/repos/38884603/shield)](https://styleci.io/repos/38884603)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/webuni/commonmark-attributes-extension.svg?style=flat-square)](https://scrutinizer-ci.com/g/webuni/commonmark-attributes-extension)
 [![SensioLabsInsight](https://img.shields.io/sensiolabs/i/8fbbdeb9-d7ba-4c5c-8d88-db950a668265.svg?style=flat-square)](https://insight.sensiolabs.com/projects/8fbbdeb9-d7ba-4c5c-8d88-db950a668265)
 

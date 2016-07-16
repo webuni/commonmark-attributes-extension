@@ -12,8 +12,14 @@
          bootstrap="vendor/autoload.php"
         >
     <testsuites>
-        <testsuite name="Webuni Commonmark Table Extension Test Suite">
+        <testsuite name="Webuni Commonmark Attributes Extension Test Suite">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
 </phpunit>
