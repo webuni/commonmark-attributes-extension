@@ -14,10 +14,10 @@
     ],
     "require": {
         "php": ">=5.4",
-        "league/commonmark": "^0.13|^0.14|^0.15"
+        "league/commonmark": "^0.14|^0.15"
     },
     "require-dev": {
-        "webuni/commonmark-table-extension": "dev-master",
+        "webuni/commonmark-table-extension": "~0.4",
         "phpunit/phpunit": "^4.3|^5.0",
         "friendsofphp/php-cs-fixer": "^1.9",
         "sllh/php-cs-fixer-styleci-bridge": "^2.0",
@@ -30,7 +30,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.3-dev"
+            "dev-master": "0.6-dev"
         }
     }
 }
