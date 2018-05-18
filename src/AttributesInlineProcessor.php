@@ -33,7 +33,7 @@ class AttributesInlineProcessor implements InlineProcessorInterface
 
             if ($node->isBlock()) {
                 $target = $node->parent();
-                if (($parent = $target->parent()) instanceof ListItem && $parent->parent() instanceof ListBlock && $parent->parent()->isTight()) {
+                if ($target && ($parent = $target->parent()) instanceof ListItem && $parent->parent() instanceof ListBlock && $parent->parent()->isTight()) {
                     $target = $parent;
                 }
             } else {
