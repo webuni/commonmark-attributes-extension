@@ -22,6 +22,7 @@ use League\CommonMark\Node\Node;
 class AttributesProcessor implements DocumentProcessorInterface
 {
     const DIRECTION_PREFIX = 'prefix';
+
     const DIRECTION_SUFFIX = 'suffix';
 
     public function processDocument(Document $document)
@@ -41,7 +42,7 @@ class AttributesProcessor implements DocumentProcessorInterface
                     $target = $parent;
                 }
 
-                if ($direction === self::DIRECTION_SUFFIX) {
+                if (self::DIRECTION_SUFFIX === $direction) {
                     $attributes = AttributesUtils::merge($target, $node->getAttributes());
                 } else {
                     $attributes = AttributesUtils::merge($node->getAttributes(), $target);
@@ -67,21 +68,24 @@ class AttributesProcessor implements DocumentProcessorInterface
             $previous = $this->getPrevious($previous);
             $next = $this->getNext($next);
 
-            if ($previous === null && $next === null) {
+            if (null === $previous && null === $next) {
                 $target = $node->parent();
                 $direction = self::DIRECTION_SUFFIX;
+
                 break;
             }
 
-            if ($previous !== null && !$previous instanceof Attributes) {
+            if (null !== $previous && !$previous instanceof Attributes) {
                 $target = $previous;
                 $direction = self::DIRECTION_SUFFIX;
+
                 break;
             }
 
-            if ($next !== null && !$next instanceof Attributes) {
+            if (null !== $next && !$next instanceof Attributes) {
                 $target = $next;
                 $direction = self::DIRECTION_PREFIX;
+
                 break;
             }
         }

@@ -26,7 +26,7 @@ class AttributesInlineParser extends AbstractInlineParser
     public function parse(InlineParserContext $inlineContext)
     {
         $cursor = $inlineContext->getCursor();
-        if ($cursor->getFirstNonSpaceCharacter() !== '{') {
+        if ('{' !== $cursor->getNextNonSpaceCharacter()) {
             return false;
         }
 
@@ -41,7 +41,7 @@ class AttributesInlineParser extends AbstractInlineParser
         }
 
         if ('' === $char) {
-            $cursor->advanceToFirstNonSpace();
+            $cursor->advanceToNextNonSpaceOrNewline();
         }
 
         $node = new InlineAttributes($attributes, ' ' === $char || '' === $char);

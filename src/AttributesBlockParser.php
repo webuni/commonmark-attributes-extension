@@ -26,7 +26,7 @@ class AttributesBlockParser extends AbstractBlockParser
             return false;
         }
 
-        if (null !== $cursor->getFirstNonSpaceCharacter()) {
+        if (null !== $cursor->getNextNonSpaceCharacter()) {
             $cursor->restoreState($state);
 
             return false;

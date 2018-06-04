@@ -24,10 +24,11 @@ class AttributesInlineProcessor implements InlineProcessorInterface
     {
         $delimiter = $delimiterStack->getTop();
 
-        while ($delimiter !== null) {
+        while (null !== $delimiter) {
             $node = $delimiter->getInlineNode();
             if (!$node instanceof InlineAttributes) {
                 $delimiter = $delimiter->getPrevious();
+
                 continue;
             }
 

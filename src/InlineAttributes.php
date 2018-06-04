@@ -17,6 +17,7 @@ use League\CommonMark\Inline\Element\AbstractInline;
 class InlineAttributes extends AbstractInline
 {
     public $attributes;
+
     public $block;
 
     public function __construct(array $attributes, $block)

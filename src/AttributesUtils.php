@@ -34,7 +34,7 @@ class AttributesUtils
         }
 
         $state = $cursor->saveState();
-        $cursor->advanceToFirstNonSpace();
+        $cursor->advanceToNextNonSpaceOrNewline();
         if ('{' !== $cursor->getCharacter()) {
             $cursor->restoreState($state);
 
@@ -50,11 +50,13 @@ class AttributesUtils
         while ($attribute = trim($cursor->match(self::$regexp))) {
             if ('#' === $attribute[0]) {
                 $attributes['id'] = substr($attribute, 1);
+
                 continue;
             }
 
             if ('.' === $attribute[0]) {
                 $attributes['class'][] = substr($attribute, 1);
+
                 continue;
             }
 
@@ -74,7 +76,13 @@ class AttributesUtils
             }
         }
 
-        if (0 === $cursor->advanceWhileMatches('}')) {
+        if (null === $cursor->match('/}/')) {
+            $cursor->restoreState($state);
+
+            return [];
+        }
+
+        if (!count($attributes)) {
             $cursor->restoreState($state);
 
             return [];
