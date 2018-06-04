@@ -16,3 +16,5 @@ Header with attributes {#header1}
 
 Paragraph with *emphasis*{.chello}
    {#par2}
+
+{#invalid} [Invalid](example.com)
