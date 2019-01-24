@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": ">=5.6",
-        "league/commonmark": "^0.15|^0.16|^0.17"
+        "league/commonmark": "^0.15|^0.16|^0.17|^0.18"
     },
     "require-dev": {
         "webuni/commonmark-table-extension": "~0.4",
