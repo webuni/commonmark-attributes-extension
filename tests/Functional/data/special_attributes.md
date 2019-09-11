@@ -20,3 +20,5 @@ some { brackets
 some } brackets
 
 some { } brackets
+
+A link inside of an emphasis tag: *[link](http://url.com){target="_blank"}*.

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -17,22 +19,12 @@ use League\CommonMark\Cursor;
 use League\CommonMark\Inline\Element\AbstractInline;
 use League\CommonMark\Util\RegexHelper;
 
-class AttributesUtils
+final class AttributesUtils
 {
-    private static $regexp;
+    private static $regexp = '/^\s*([.#][_a-z0-9-]+|'.RegexHelper::PARTIAL_ATTRIBUTENAME.RegexHelper::PARTIAL_ATTRIBUTEVALUESPEC.')(?<!})\s*/i';
 
-    public static function parse(Cursor $cursor)
+    public static function parse(Cursor $cursor): array
     {
-        if (null === self::$regexp) {
-            $regex = RegexHelper::getInstance();
-
-            self::$regexp = sprintf(
-                '/^\s*([.#][_a-z0-9-]+|%s%s)(?<!})\s*/i',
-                $regex->getPartialRegex(RegexHelper::ATTRIBUTENAME),
-                $regex->getPartialRegex(RegexHelper::ATTRIBUTEVALUESPEC)
-            );
-        }
-
         $state = $cursor->saveState();
         $cursor->advanceToNextNonSpaceOrNewline();
         if ('{' !== $cursor->getCharacter()) {
@@ -47,7 +39,7 @@ class AttributesUtils
         }
 
         $attributes = [];
-        while ($attribute = trim($cursor->match(self::$regexp))) {
+        while ($attribute = trim((string) $cursor->match(self::$regexp))) {
             if ('#' === $attribute[0]) {
                 $attributes['id'] = substr($attribute, 1);
 
@@ -89,18 +81,18 @@ class AttributesUtils
         }
 
         if (isset($attributes['class'])) {
-            $attributes['class'] = implode(' ', $attributes['class']);
+            $attributes['class'] = implode(' ', (array) $attributes['class']);
         }
 
         return $attributes;
     }
 
-    public static function merge($attributes1, $attributes2)
+    public static function merge($attributes1, $attributes2): array
     {
         $attributes = [];
         foreach ([$attributes1, $attributes2] as $arg) {
             if ($arg instanceof AbstractBlock || $arg instanceof AbstractInline) {
-                $arg = isset($arg->data['attributes']) ? $arg->data['attributes'] : [];
+                $arg = $arg->data['attributes'] ?? [];
             }
 
             $arg = (array) $arg;

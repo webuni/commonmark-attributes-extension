@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -12,35 +14,18 @@
 
 namespace Webuni\CommonMark\AttributesExtension;
 
-use League\CommonMark\Extension\Extension;
+use League\CommonMark\ConfigurableEnvironmentInterface;
+use League\CommonMark\Event\DocumentParsedEvent;
+use League\CommonMark\Extension\ExtensionInterface;
 
-class AttributesExtension extends Extension
+final class AttributesExtension implements ExtensionInterface
 {
-    public function getBlockParsers()
+    public function register(ConfigurableEnvironmentInterface $environment): void
     {
-        return [
-            new AttributesBlockParser(),
-        ];
-    }
-
-    public function getInlineParsers()
-    {
-        return [
-            new AttributesInlineParser(),
-        ];
-    }
-
-    public function getInlineProcessors()
-    {
-        return [
-            new AttributesInlineProcessor(),
-        ];
-    }
-
-    public function getDocumentProcessors()
-    {
-        return [
-            new AttributesProcessor(),
-        ];
+        $environment
+            ->addBlockParser(new AttributesBlockParser())
+            ->addInlineParser(new AttributesInlineParser())
+            ->addEventListener(DocumentParsedEvent::class, new AttributesListener())
+        ;
     }
 }

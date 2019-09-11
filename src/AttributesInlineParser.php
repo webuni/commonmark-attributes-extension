@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -12,18 +14,17 @@
 
 namespace Webuni\CommonMark\AttributesExtension;
 
-use League\CommonMark\Delimiter\Delimiter;
-use League\CommonMark\Inline\Parser\AbstractInlineParser;
+use League\CommonMark\Inline\Parser\InlineParserInterface;
 use League\CommonMark\InlineParserContext;
 
-class AttributesInlineParser extends AbstractInlineParser
+final class AttributesInlineParser implements InlineParserInterface
 {
-    public function getCharacters()
+    public function getCharacters(): array
     {
         return [' ', '{'];
     }
 
-    public function parse(InlineParserContext $inlineContext)
+    public function parse(InlineParserContext $inlineContext): bool
     {
         $cursor = $inlineContext->getCursor();
         if ('{' !== $cursor->getNextNonSpaceCharacter()) {
@@ -44,9 +45,8 @@ class AttributesInlineParser extends AbstractInlineParser
             $cursor->advanceToNextNonSpaceOrNewline();
         }
 
-        $node = new InlineAttributes($attributes, ' ' === $char || '' === $char);
+        $node = new AttributesInline($attributes, ' ' === $char || '' === $char);
         $inlineContext->getContainer()->appendChild($node);
-        $inlineContext->getDelimiterStack()->push(new Delimiter('attributes', 1, $node, false, false));
 
         return true;
     }

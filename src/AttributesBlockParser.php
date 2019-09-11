@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -12,13 +14,13 @@
 
 namespace Webuni\CommonMark\AttributesExtension;
 
-use League\CommonMark\Block\Parser\AbstractBlockParser;
+use League\CommonMark\Block\Parser\BlockParserInterface;
 use League\CommonMark\ContextInterface;
 use League\CommonMark\Cursor;
 
-class AttributesBlockParser extends AbstractBlockParser
+final class AttributesBlockParser implements BlockParserInterface
 {
-    public function parse(ContextInterface $context, Cursor $cursor)
+    public function parse(ContextInterface $context, Cursor $cursor): bool
     {
         $state = $cursor->saveState();
         $attributes = AttributesUtils::parse($cursor);

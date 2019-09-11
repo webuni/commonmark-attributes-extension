@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -12,45 +14,42 @@
 
 namespace Webuni\CommonMark\AttributesExtension\Tests\Functional;
 
-use League\CommonMark\Converter;
 use League\CommonMark\DocParser;
+use League\CommonMark\ElementRendererInterface;
 use League\CommonMark\Environment;
+use League\CommonMark\Ext\Table\TableExtension;
 use League\CommonMark\HtmlRenderer;
+use PHPUnit\Framework\TestCase;
 use Webuni\CommonMark\AttributesExtension\AttributesExtension;
-use Webuni\CommonMark\TableExtension\TableExtension;
+use Webuni\CommonMark\TableExtension\TableExtension as TableExtensionOld;
 
-class LocalDataTest extends \PHPUnit_Framework_TestCase
+/**
+ * @internal
+ * @coversNothing
+ */
+class LocalDataTest extends TestCase
 {
-    protected $converter;
+    protected $environment;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $environment = Environment::createCommonMarkEnvironment();
-        $environment->addExtension(new AttributesExtension());
-        $environment->addExtension(new TableExtension());
+        $this->environment = Environment::createCommonMarkEnvironment();
+        $this->environment->addExtension(new AttributesExtension());
+        $this->environment->addExtension(class_exists(TableExtension::class) ? new TableExtension() : new TableExtensionOld());
 
-        $this->converter = new Converter(new DocParser($environment), new HtmlRenderer($environment));
+        $this->parser = new DocParser($this->environment);
     }
 
     /**
      * @dataProvider dataProvider
      */
-    public function testExample($markdown, $html, $testName)
+    public function testRenderer(string $markdown, string $html, string $testName): void
     {
-        $actualResult = $this->converter->convertToHtml($markdown);
-
-        $failureMessage = sprintf('Unexpected result for "%s" test', $testName);
-        $failureMessage .= "\n=== markdown ===============\n".$markdown;
-        $failureMessage .= "\n=== expected ===============\n".$html;
-        $failureMessage .= "\n=== got ====================\n".$actualResult;
-
-        $this->assertEquals($html, $actualResult, $failureMessage);
+        $renderer = new HtmlRenderer($this->environment);
+        $this->assertCommonMark($renderer, $markdown, $html, $testName);
     }
 
-    /**
-     * @return array
-     */
-    public function dataProvider()
+    public function dataProvider(): array
     {
         $ret = [];
         foreach (glob(__DIR__.'/data/*.md') as $markdownFile) {
@@ -62,5 +61,18 @@ class LocalDataTest extends \PHPUnit_Framework_TestCase
         }
 
         return $ret;
+    }
+
+    protected function assertCommonMark(ElementRendererInterface $renderer, $markdown, $html, $testName): void
+    {
+        $documentAST = $this->parser->parse($markdown);
+        $actualResult = $renderer->renderBlock($documentAST);
+
+        $failureMessage = sprintf('Unexpected result for "%s" test', $testName);
+        $failureMessage .= "\n=== markdown ===============\n".$markdown;
+        $failureMessage .= "\n=== expected ===============\n".$html;
+        $failureMessage .= "\n=== got ====================\n".$actualResult;
+
+        $this->assertEquals($html, $actualResult, $failureMessage);
     }
 }

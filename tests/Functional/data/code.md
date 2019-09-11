@@ -1,5 +1,5 @@
 {.classA}
-```markdown 
+```markdown
 {#par1}
 Paragraph with a.
 
@@ -11,7 +11,7 @@ Header with attributes {#header1}
 ### Header no attributes ###
 
 {#par1}
-Paragraph with a.
+Paragraph **with bold**.
 
 Paragraph with *emphasis*{.chello}
    {#par2}

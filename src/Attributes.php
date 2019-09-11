@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -16,37 +18,31 @@ use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\ContextInterface;
 use League\CommonMark\Cursor;
 
-class Attributes extends AbstractBlock
+final class Attributes extends AbstractBlock
 {
     private $attributes;
 
-    public function __construct($attributes)
+    public function __construct(array $attributes)
     {
-        parent::__construct();
         $this->attributes = $attributes;
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    public function canContain(AbstractBlock $block)
+    public function canContain(AbstractBlock $block): bool
     {
         return false;
     }
 
-    public function acceptsLines()
+    public function isCode(): bool
     {
         return false;
     }
 
-    public function isCode()
-    {
-        return false;
-    }
-
-    public function matchesNextLine(Cursor $cursor)
+    public function matchesNextLine(Cursor $cursor): bool
     {
         if ($cursor->isBlank()) {
             $this->setLastLineBlank(true);
@@ -57,12 +53,12 @@ class Attributes extends AbstractBlock
         return false;
     }
 
-    public function shouldLastLineBeBlank(Cursor $cursor, $currentLineNumber)
+    public function shouldLastLineBeBlank(Cursor $cursor, int $currentLineNumber): bool
     {
         return false;
     }
 
-    public function handleRemainingContents(ContextInterface $context, Cursor $cursor)
+    public function handleRemainingContents(ContextInterface $context, Cursor $cursor): void
     {
     }
 }

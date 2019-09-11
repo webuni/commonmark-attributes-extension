@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -14,31 +16,32 @@ namespace Webuni\CommonMark\AttributesExtension;
 
 use League\CommonMark\Block\Element\AbstractBlock;
 use League\CommonMark\Block\Element\Document;
+use League\CommonMark\Block\Element\FencedCode;
 use League\CommonMark\Block\Element\ListBlock;
 use League\CommonMark\Block\Element\ListItem;
-use League\CommonMark\DocumentProcessorInterface;
+use League\CommonMark\Inline\Element\AbstractInline;
 use League\CommonMark\Node\Node;
 
-class AttributesProcessor implements DocumentProcessorInterface
+final class AttributesProcessor
 {
-    const DIRECTION_PREFIX = 'prefix';
+    private const DIRECTION_PREFIX = 'prefix';
 
-    const DIRECTION_SUFFIX = 'suffix';
+    private const DIRECTION_SUFFIX = 'suffix';
 
-    public function processDocument(Document $document)
+    public function processDocument(Document $document): void
     {
         $walker = $document->walker();
         while ($event = $walker->next()) {
             $node = $event->getNode();
-
-            if ($event->isEntering() || !$node instanceof Attributes) {
+            if (!$node instanceof AttributesInline && ($event->isEntering() || !$node instanceof Attributes)) {
                 continue;
             }
 
             list($target, $direction) = $this->findTargetAndDirection($node);
 
-            if ($target) {
-                if (($parent = $target->parent()) instanceof ListItem && $parent->parent() instanceof ListBlock && $parent->parent()->isTight()) {
+            if ($target instanceof Node) {
+                $parent = $target->parent();
+                if ($parent instanceof ListItem && $parent->parent() instanceof ListBlock && $parent->parent()->isTight()) {
                     $target = $parent;
                 }
 
@@ -48,18 +51,23 @@ class AttributesProcessor implements DocumentProcessorInterface
                     $attributes = AttributesUtils::merge($node->getAttributes(), $target);
                 }
 
-                $target->data['attributes'] = $attributes;
+                if ($target instanceof AbstractBlock || $target instanceof AbstractInline) {
+                    $target->data['attributes'] = $attributes;
+                }
             }
 
             if ($node instanceof AbstractBlock && $node->endsWithBlankLine() && $node->next() && $node->previous()) {
-                $node->previous()->setLastLineBlank(true);
+                $previous = $node->previous();
+                if ($previous instanceof AbstractBlock) {
+                    $previous->setLastLineBlank(true);
+                }
             }
 
             $node->detach();
         }
     }
 
-    private function findTargetAndDirection(Node $node)
+    private function findTargetAndDirection(Node $node): array
     {
         $target = null;
         $direction = null;
@@ -69,20 +77,26 @@ class AttributesProcessor implements DocumentProcessorInterface
             $next = $this->getNext($next);
 
             if (null === $previous && null === $next) {
-                $target = $node->parent();
-                $direction = self::DIRECTION_SUFFIX;
+                if (!$node->parent() instanceof FencedCode) {
+                    $target = $node->parent();
+                    $direction = self::DIRECTION_SUFFIX;
+                }
 
                 break;
             }
 
-            if (null !== $previous && !$previous instanceof Attributes) {
+            if ($node instanceof AttributesInline && (null === $previous || ($previous instanceof AbstractInline && $node->isBlock()))) {
+                continue;
+            }
+
+            if (null !== $previous && !$this->isAttributesNode($previous)) {
                 $target = $previous;
                 $direction = self::DIRECTION_SUFFIX;
 
                 break;
             }
 
-            if (null !== $next && !$next instanceof Attributes) {
+            if (null !== $next && !$this->isAttributesNode($next)) {
                 $target = $next;
                 $direction = self::DIRECTION_PREFIX;
 
@@ -93,7 +107,7 @@ class AttributesProcessor implements DocumentProcessorInterface
         return [$target, $direction];
     }
 
-    private function getPrevious(Node $node = null)
+    private function getPrevious(Node $node = null): ?Node
     {
         $previous = $node instanceof Node ? $node->previous() : null;
 
@@ -104,10 +118,19 @@ class AttributesProcessor implements DocumentProcessorInterface
         return $previous;
     }
 
-    private function getNext(Node $node = null)
+    private function getNext(Node $node = null): ?Node
     {
-        if ($node instanceof Node) {
-            return $node instanceof AbstractBlock && $node->endsWithBlankLine() ? null : $node->next();
+        $next = $node instanceof Node ? $node->next() : null;
+
+        if ($node instanceof AbstractBlock && $node->endsWithBlankLine()) {
+            $next = null;
         }
+
+        return $next;
+    }
+
+    private function isAttributesNode(Node $node): bool
+    {
+        return $node instanceof Attributes || $node instanceof AttributesInline;
     }
 }

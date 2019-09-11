@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This is part of the webuni/commonmark-attributes-extension package.
  *
@@ -14,25 +16,25 @@ namespace Webuni\CommonMark\AttributesExtension;
 
 use League\CommonMark\Inline\Element\AbstractInline;
 
-class InlineAttributes extends AbstractInline
+final class AttributesInline extends AbstractInline
 {
     public $attributes;
 
     public $block;
 
-    public function __construct(array $attributes, $block)
+    public function __construct(array $attributes, bool $block)
     {
         $this->attributes = $attributes;
-        $this->block = (bool) $block;
+        $this->block = $block;
         $this->data = ['delim' => true];
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    public function isBlock()
+    public function isBlock(): bool
     {
         return (bool) $this->block;
     }
