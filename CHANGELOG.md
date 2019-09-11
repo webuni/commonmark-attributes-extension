@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.0.0 (2019-09-11)
+------------------
+
+ * Increased minimum PHP version to 7.1
+ * Updated to the commonmark 1.0 API
+ * Removed support for commonmark 0.* API
+
 0.5.0 (2016-09-26)
 ------------------
 
