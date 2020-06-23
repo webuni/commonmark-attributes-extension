@@ -8,6 +8,11 @@ CommonMark Attributes Extension
 
 The Attributes extension adds a syntax to define attributes on the various HTML elements in markdown’s output.
 
+## DEPRECATED
+
+**This extension has been deprecated**.  All of its functionality now exists in [`league/commonmark`](https://github.com/thephpleague/commonmark) 1.5+ under the `League\CommonMark\Extension\Attributes` namespace, so you should upgrade to that version and use that bundled extension instead of this one.
+
+
 Installation
 ------------
 
